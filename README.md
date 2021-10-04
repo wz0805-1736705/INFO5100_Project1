@@ -1,1 +1,1 @@
-# INFO5100_Project1
+# info5100-project

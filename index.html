@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <div id="barRight"></div>
+    <script>
+        d3.json("../dataset/dc_data.json").then((data) => {
+            /*let hairArr = []
+            data.forEach((d, i) => {
+                hairArr[i] = d['HAIR'];
+            });
+            const occurrences = hairArr.reduce(function (acc, curr) {
+            return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+            }, {});
+            console.log(occurrences);
+            let eyeArr = []
+            data.forEach((d, i) => {
+                eyeArr[i] = d['EYE'];
+            });
+            const occurrencesEYE = eyeArr.reduce(function (acc, curr) {
+            return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+            }, {});
+
+            console.log(occurrencesEYE);
+            */
+            let eachCountR = [];
+            let colCountR = 18;
+            for (let i = 0; i < colCountR; i++) {
+                eachCountR[i] = 0;
+            }
+            let totalCountR = 0;
+            let colNames = ['Male', 'Female', 'Other Gender', 'Public Identity', 'Secret Identity', 'Other/Unknown Identity', 'Good Characters', 'Neutral Characters', 'Bad Characters', 'Living Characters', 'Deceased Characters', 'Black Hair', 'Brown Hair', 'Blond Hair', 'Other Hair Colors', 'Blue Eyes', 'Brown Eyes', 'Other Eye Colors'];
+            data.forEach((d, i) => {
+                totalCountR++;
+                if (d['SEX'] == 'Male Characters') {
+                    eachCountR[0]++;
+                } else if (d['SEX'] == 'Female Characters') {
+                    eachCountR[1]++;
+                } else {
+                    eachCountR[2]++;
+                }
+                 
+                if (d['ID'] == 'Public Identity') {
+                    eachCountR[3]++;
+                } else if (d['ID'] == 'Secret Identity') {
+                    eachCountR[4]++;
+                } else {
+                    eachCountR[5]++;
+                }
+                if (d['ALIGN'] == 'Good Characters') {
+                    eachCountR[6]++;
+                } else if (d['ALIGN'] == 'Neutral Characters') {
+                    eachCountR[7]++;
+                } else {
+                    eachCountR[8]++;
+                }
+                if (d['ALIVE'] == 'Living Characters') {
+                    eachCountR[9]++;
+                } else {
+                    eachCountR[10]++;
+                }
+                if (d['HAIR'] == 'Black Hair') {
+                    eachCountR[11]++;
+                } else if (d['HAIR'] == 'Brown Hair') {
+                    eachCountR[12]++;
+                } else if (d['HAIR'] == 'Blond Hair') {
+                    eachCountR[13]++;
+                } else {
+                    eachCountR[14]++;
+                }
+                if (d['EYE'] == 'Blue Eyes') {
+                    eachCountR[15]++;
+                } else if (d['EYE'] == 'Brown Eyes') {
+                    eachCountR[16]++;
+                } else if (d['EYE'] != "") {
+                    eachCountR[17]++;
+                }
+            });
+            console.log(totalCountR);
+            let svg = d3.select('#barRight')
+                .append('svg')
+                .attr('width', 600)
+                .attr('height', 600);
+            svg.append('image')
+                .attr('x', 350)
+                .attr('y', 10)
+                .attr('width', 80)
+                .attr('height', 80)
+                .attr('href', '../pics/dc_logo.png');
+            svg.append('image')
+                .attr('x', 130)
+                .attr('y', 10)
+                .attr('width', 120)
+                .attr('height', 80)
+                .attr('href', '../pics/marvel_logo.png');
+            let yScaleR = d3.scaleLinear().domain([0, totalCountR]).range([0, 220]);
+            let xScaleR = d3.scaleLinear().domain([0, colCountR]).range([100, 600]);
+            console.log(eachCountR);
+            for (let i = 0; i < colCountR; i++) {
+                svg.append('rect')
+                    .attr('x', 300)
+                    .attr('y', xScaleR(i + 0.5))
+                    .attr('width', yScaleR(eachCountR[i]))
+                    .attr('height', 10)
+                    .style('fill', '#0272E8');
+                svg.append('text')
+                    .attr('x', 300 + yScaleR(eachCountR[i]) + 5)
+                    .attr('y', xScaleR(i + 0.5) + 5)
+                    .attr('text-anchor', 'start')
+                    .attr('dominant-baseline', 'middle')
+                    .text(Math.floor(eachCountR[i] / totalCountR * 100) + '%')
+                    .style('fill', 'darkBlue');
+                svg.append('text')
+                    .attr('x', 300)
+                    .attr('y', xScaleR(i))
+                    .attr('text-anchor', 'middle')
+                    .attr('dominant-baseline', 'hanging')
+                    .text(colNames[i])
+                    .style('fill', 'black')
+                    .style('font-size', 13);
+            };
+            
+        });
+    </script>
+</body>
+
+</html>
