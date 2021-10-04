@@ -112,6 +112,7 @@
                     .attr('y', xScaleR(i + 0.5) + 5)
                     .attr('text-anchor', 'start')
                     .attr('dominant-baseline', 'middle')
+                    .attr("font-size","13px")
                     .text(Math.floor(eachCountR[i] / totalCountR * 100) + '%')
                     .style('fill', 'darkBlue');
                 svg.append('text')
@@ -123,6 +124,123 @@
                     .style('fill', 'black')
                     .style('font-size', 13);
             };
+        //     const width = svg.attr("width");
+        //   const height = svg.attr("height");
+        const width = 600;
+          const height = 600;
+          
+          d3.json("../dataset/marveldata.json")
+            .then((data) => {
+              console.log(data);
+              console.log(data.length);
+              let lmale = 0;
+              let lfemale = 0;
+              let lgsm = 0;
+              let lsi = 0;
+              let lpi = 0;
+              let lndi = 0;
+              let ldata = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+              let numAttr = 18;
+            //   data = data.filter( (d) => {return d['carat'] != 0 && d['price'] != 0} );
+              // console.log(data.length);
+              data.forEach( (d,i) => {
+                  if (d['SEX'] == "Male Characters"){
+                      ldata[0]++;
+                  }
+                  if (d['SEX'] == "Female Characters"){
+                    ldata[1]++;
+                  }
+                  if (d['GSM'] != "" || (d['SEX'] != "Female Characters" && d['SEX'] != "Male Characters")){
+                    ldata[2]++;
+                  }
+                  if (d['ID'] == "Secret Identity"){
+                    ldata[3]++;
+                  }
+                  if (d['ID'] == "Public Identity"){
+                    ldata[4]++;
+                  }
+                  if (d['ID'] != "Public Identity" && d['ID'] != "Secret Identity" && d['ID'] != ""){
+                    ldata[5]++;
+                  }
+                  if (d['ALIGN'] == "Good Characters"){
+                    ldata[6]++;
+                  }
+                  if (d['ALIGN'] == "Bad Characters"){
+                    ldata[7]++;
+                  }
+                  if (d['ALIGN'] == "Neutral Characters"){
+                    ldata[8]++;
+                  }
+                  if (d['ALIVE'] == "Living Characters"){
+                    ldata[9]++;
+                  }
+                  if (d['ALIVE'] == "Deceased Characters"){
+                    ldata[10]++;
+                  }
+                  if (d['HAIR'] == "Black Hair"){
+                    ldata[11]++;
+                  }
+                  if (d['HAIR'] == "Brown Hair"){
+                    ldata[12]++;
+                  }
+                  if (d['HAIR'] == "Blond Hair"){
+                    ldata[13]++;
+                  }
+                  if (d['HAIR'] != "Black Hair" && d['HAIR'] !="Blonde Hair" && d['HAIR'] !="Brown Hair"){
+                    ldata[14]++;
+                  }
+                  if (d['EYE'] == "Blue Eyes"){
+                    ldata[15]++;
+                  }
+                  if (d['EYE'] == "Brown Eyes"){
+                    ldata[16]++;
+                  }
+                  if (d['EYE'] != "Blue Eyes" && d['EYE'] !="Brown Eyes" && d['EYE'] !=""){
+                    ldata[17]++;
+                  }
+                  
+              });
+            
+              let lxScale = d3.scaleLinear().domain([0,16376]).range([width/2, 30]);
+              let lyScale = d3.scaleLinear().domain([0,numAttr]).range([100, height]);
+
+              for (let i = 0; i < numAttr; i++){
+                svg.append('rect')
+                        .attr('x', lxScale(ldata[i]))
+                        .attr('y', lyScale(i+0.5))
+                        .attr('width', width/2 - lxScale(ldata[i]))
+                        .attr('height', 10)
+                        .style("fill", "#DC0319");
+                svg.append("text")
+                        .attr("text-anchor","end")
+                        .attr("font-size","13px")
+                        .attr("dominant-baseline", "middle")
+                        .attr("x",(lxScale(ldata[i])-5))
+                        .attr("y",(lyScale(i+0.5)+5))
+                        .style("fill", "#DC0319")
+                        .text(Math.floor(100 *ldata[i]/data.length)+"%");
+
+              }
+            
+              let hairArr = []
+                data.forEach((d, i) => {
+                    hairArr[i] = d['HAIR'];
+                });
+                const hairoccurrences = hairArr.reduce(function (acc, curr) {
+                return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+                }, {});
+
+                console.log(hairoccurrences);
+            let eyeArr = []
+                data.forEach((d, i) => {
+                    eyeArr[i] = d['EYE'];
+                });
+                const eyeoccurrences = eyeArr.reduce(function (acc, curr) {
+                return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+                }, {});
+
+                console.log(eyeoccurrences);
+            });
             
         });
     </script>
