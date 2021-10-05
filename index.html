@@ -43,7 +43,7 @@
                 } else {
                     eachCountR[2]++;
                 }
-                 
+
                 if (d['ID'] == 'Public Identity') {
                     eachCountR[3]++;
                 } else if (d['ID'] == 'Secret Identity') {
@@ -112,7 +112,7 @@
                     .attr('y', xScaleR(i + 0.5) + 5)
                     .attr('text-anchor', 'start')
                     .attr('dominant-baseline', 'middle')
-                    .attr("font-size","13px")
+                    .attr("font-size", "13px")
                     .text(Math.floor(eachCountR[i] / totalCountR * 100) + '%')
                     .style('fill', 'darkBlue');
                 svg.append('text')
@@ -124,125 +124,170 @@
                     .style('fill', 'black')
                     .style('font-size', 13);
             };
-        //     const width = svg.attr("width");
-        //   const height = svg.attr("height");
-        const width = 600;
-          const height = 600;
-          
-          d3.json("../dataset/marveldata.json")
-            .then((data) => {
-              console.log(data);
-              console.log(data.length);
-              let lmale = 0;
-              let lfemale = 0;
-              let lgsm = 0;
-              let lsi = 0;
-              let lpi = 0;
-              let lndi = 0;
-              let ldata = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-              let numAttr = 18;
-            //   data = data.filter( (d) => {return d['carat'] != 0 && d['price'] != 0} );
-              // console.log(data.length);
-              data.forEach( (d,i) => {
-                  if (d['SEX'] == "Male Characters"){
-                      ldata[0]++;
-                  }
-                  if (d['SEX'] == "Female Characters"){
-                    ldata[1]++;
-                  }
-                  if (d['GSM'] != "" || (d['SEX'] != "Female Characters" && d['SEX'] != "Male Characters")){
-                    ldata[2]++;
-                  }
-                  if (d['ID'] == "Secret Identity"){
-                    ldata[3]++;
-                  }
-                  if (d['ID'] == "Public Identity"){
-                    ldata[4]++;
-                  }
-                  if (d['ID'] != "Public Identity" && d['ID'] != "Secret Identity" && d['ID'] != ""){
-                    ldata[5]++;
-                  }
-                  if (d['ALIGN'] == "Good Characters"){
-                    ldata[6]++;
-                  }
-                  if (d['ALIGN'] == "Bad Characters"){
-                    ldata[7]++;
-                  }
-                  if (d['ALIGN'] == "Neutral Characters"){
-                    ldata[8]++;
-                  }
-                  if (d['ALIVE'] == "Living Characters"){
-                    ldata[9]++;
-                  }
-                  if (d['ALIVE'] == "Deceased Characters"){
-                    ldata[10]++;
-                  }
-                  if (d['HAIR'] == "Black Hair"){
-                    ldata[11]++;
-                  }
-                  if (d['HAIR'] == "Brown Hair"){
-                    ldata[12]++;
-                  }
-                  if (d['HAIR'] == "Blond Hair"){
-                    ldata[13]++;
-                  }
-                  if (d['HAIR'] != "Black Hair" && d['HAIR'] !="Blonde Hair" && d['HAIR'] !="Brown Hair"){
-                    ldata[14]++;
-                  }
-                  if (d['EYE'] == "Blue Eyes"){
-                    ldata[15]++;
-                  }
-                  if (d['EYE'] == "Brown Eyes"){
-                    ldata[16]++;
-                  }
-                  if (d['EYE'] != "Blue Eyes" && d['EYE'] !="Brown Eyes" && d['EYE'] !=""){
-                    ldata[17]++;
-                  }
-                  
-              });
-            
-              let lxScale = d3.scaleLinear().domain([0,16376]).range([width/2, 30]);
-              let lyScale = d3.scaleLinear().domain([0,numAttr]).range([100, height]);
+            //     const width = svg.attr("width");
+            //   const height = svg.attr("height");
+            const width = 600;
+            const height = 600;
 
-              for (let i = 0; i < numAttr; i++){
-                svg.append('rect')
-                        .attr('x', lxScale(ldata[i]))
-                        .attr('y', lyScale(i+0.5))
-                        .attr('width', width/2 - lxScale(ldata[i]))
-                        .attr('height', 10)
-                        .style("fill", "#DC0319");
-                svg.append("text")
-                        .attr("text-anchor","end")
-                        .attr("font-size","13px")
-                        .attr("dominant-baseline", "middle")
-                        .attr("x",(lxScale(ldata[i])-5))
-                        .attr("y",(lyScale(i+0.5)+5))
-                        .style("fill", "#DC0319")
-                        .text(Math.floor(100 *ldata[i]/data.length)+"%");
+            d3.json("../dataset/marveldata.json")
+                .then((data) => {
+                    console.log(data);
+                    console.log(data.length);
+                    let lmale = 0;
+                    let lfemale = 0;
+                    let lgsm = 0;
+                    let lsi = 0;
+                    let lpi = 0;
+                    let lndi = 0;
+                    let ldata = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                    let numAttr = 18;
+                    //   data = data.filter( (d) => {return d['carat'] != 0 && d['price'] != 0} );
+                    // console.log(data.length);
+                    data.forEach((d, i) => {
+                        if (d['SEX'] == "Male Characters") {
+                            ldata[0]++;
+                        }
+                        if (d['SEX'] == "Female Characters") {
+                            ldata[1]++;
+                        }
+                        if (d['GSM'] != "" || (d['SEX'] != "Female Characters" && d['SEX'] != "Male Characters")) {
+                            ldata[2]++;
+                        }
+                        if (d['ID'] == "Secret Identity") {
+                            ldata[3]++;
+                        }
+                        if (d['ID'] == "Public Identity") {
+                            ldata[4]++;
+                        }
+                        if (d['ID'] != "Public Identity" && d['ID'] != "Secret Identity" && d['ID'] != "") {
+                            ldata[5]++;
+                        }
+                        if (d['ALIGN'] == "Good Characters") {
+                            ldata[6]++;
+                        }
+                        if (d['ALIGN'] == "Bad Characters") {
+                            ldata[7]++;
+                        }
+                        if (d['ALIGN'] == "Neutral Characters") {
+                            ldata[8]++;
+                        }
+                        if (d['ALIVE'] == "Living Characters") {
+                            ldata[9]++;
+                        }
+                        if (d['ALIVE'] == "Deceased Characters") {
+                            ldata[10]++;
+                        }
+                        if (d['HAIR'] == "Black Hair") {
+                            ldata[11]++;
+                        }
+                        if (d['HAIR'] == "Brown Hair") {
+                            ldata[12]++;
+                        }
+                        if (d['HAIR'] == "Blond Hair") {
+                            ldata[13]++;
+                        }
+                        if (d['HAIR'] != "Black Hair" && d['HAIR'] != "Blonde Hair" && d['HAIR'] != "Brown Hair") {
+                            ldata[14]++;
+                        }
+                        if (d['EYE'] == "Blue Eyes") {
+                            ldata[15]++;
+                        }
+                        if (d['EYE'] == "Brown Eyes") {
+                            ldata[16]++;
+                        }
+                        if (d['EYE'] != "Blue Eyes" && d['EYE'] != "Brown Eyes" && d['EYE'] != "") {
+                            ldata[17]++;
+                        }
 
-              }
-            
-              let hairArr = []
-                data.forEach((d, i) => {
-                    hairArr[i] = d['HAIR'];
+                    });
+
+                    let lxScale = d3.scaleLinear().domain([0, 16376]).range([width / 2, 30]);
+                    let lyScale = d3.scaleLinear().domain([0, numAttr]).range([100, height]);
+
+                    for (let i = 0; i < numAttr; i++) {
+                        svg.append('rect')
+                            .attr('x', lxScale(ldata[i]))
+                            .attr('y', lyScale(i + 0.5))
+                            .attr('width', width / 2 - lxScale(ldata[i]))
+                            .attr('height', 10)
+                            .style("fill", "#DC0319");
+                        svg.append("text")
+                            .attr("text-anchor", "end")
+                            .attr("font-size", "13px")
+                            .attr("dominant-baseline", "middle")
+                            .attr("x", (lxScale(ldata[i]) - 5))
+                            .attr("y", (lyScale(i + 0.5) + 5))
+                            .style("fill", "#DC0319")
+                            .text(Math.floor(100 * ldata[i] / data.length) + "%");
+
+                    }
+
+                    let hairArr = []
+                    data.forEach((d, i) => {
+                        hairArr[i] = d['HAIR'];
+                    });
+                    const hairoccurrences = hairArr.reduce(function(acc, curr) {
+                        return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+                    }, {});
+
+                    console.log(hairoccurrences);
+                    let eyeArr = []
+                    data.forEach((d, i) => {
+                        eyeArr[i] = d['EYE'];
+                    });
+                    const eyeoccurrences = eyeArr.reduce(function(acc, curr) {
+                        return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+                    }, {});
+
+                    console.log(eyeoccurrences);
                 });
-                const hairoccurrences = hairArr.reduce(function (acc, curr) {
-                return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
-                }, {});
 
-                console.log(hairoccurrences);
-            let eyeArr = []
-                data.forEach((d, i) => {
-                    eyeArr[i] = d['EYE'];
-                });
-                const eyeoccurrences = eyeArr.reduce(function (acc, curr) {
-                return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
-                }, {});
-
-                console.log(eyeoccurrences);
-            });
-            
         });
+
+
+        // GRAPH 2
+        const superpowers = ["Combat", "Durability", "Intelligence", "Power", "Speed", "Strength"];
+
+        d3.csv("../dataset/superhero-powers.csv", d3.autoType).then((powers_data) => {
+            // console.log("POWERS: ", powers_data);
+            let dc_powers = {};
+            let marvel_powers = {};
+
+            superpowers.forEach((d, i) => {
+                const marvel_count = getCharacterByPower("Marvel Comics", superpowers[i], powers_data);
+                marvel_powers[superpowers[i]] = marvel_count;
+                const dc_count = getCharacterByPower("DC Comics", superpowers[i], powers_data);
+                dc_powers[superpowers[i]] = dc_count;
+            });
+
+            console.log("MARVEL ======== ", marvel_powers);
+            console.log("DC ======== ", dc_powers);
+        });
+
+        function getCharacterByPower(creator, power, powers_data) {
+            let range1_count = 0;
+            let range2_count = 0;
+            let range3_count = 0;
+            let range4_count = 0;
+
+            powers_data.forEach((d, i) => {
+                if (d['Creator'] == creator && d[superpowers[0]] != null && d[superpowers[1]] != null && d[superpowers[2]] != null && d[superpowers[3]] != null && d[superpowers[4]] != null && d[superpowers[5]] != null) {
+                    if (d[power] <= 24) range1_count += 1;
+                    else if (d[power] <= 49) range2_count += 1;
+                    else if (d[power] <= 74) range3_count += 1;
+                    else if (d[power] <= 105) range4_count += 1; // One value for Marvel is 105 instead of 100
+                }
+            });
+
+            const power_stat = {
+                "range1": range1_count,
+                "range2": range2_count,
+                "range3": range3_count,
+                "range4": range4_count
+            }
+
+            return power_stat;
+        }
     </script>
 </body>
 
