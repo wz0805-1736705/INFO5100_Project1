@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <style>
+    .container {
+      margin: 30px auto;
+      width: 800px;
+      height: 600px;
+      border: 1px solid #000;
+    }
+    .webs polygon,
+    .lines line {
+      fill: white;
+      fill-opacity: 0.5;
+      stroke: gray;
+      stroke-dasharray: 10 5;
+    }
+    .webs polygon:nth-child(odd) {
+      fill: blue;
+    }
+    .areas polygon {
+      fill-opacity: 0.5;
+      stroke-width: 3;
+    }
+    .areas circle {
+      fill: white;
+      stroke-width: 3;
+    }
+    .texts text {
+      text-anchor: middle;
+    }
+  </style>
+  <body>
+    <div id="barRight"></div>
+    <script>
+      let svg = d3.select('#barRight')
+                .append('svg')
+                .attr('width', 600)
+                .attr('height', 600);
+            svg.append('image')
+                .attr('x', 350)
+                .attr('y', 10)
+                .attr('width', 80)
+                .attr('height', 80)
+                .attr('href', '../pics/dc_logo.png');
+            svg.append('image')
+                .attr('x', 130)
+                .attr('y', 10)
+                .attr('width', 120)
+                .attr('height', 80)
+                .attr('href', '../pics/marvel_logo.png');
+        d3.json("../dataset/dc_data.json").then((data) => {
+            let eachCountR = [];
+            let colCountR = 16;
+            for (let i = 0; i < colCountR; i++) {
+                eachCountR[i] = 0;
+            }
+            let totalCountR = 0;
+            let colNames = ['Gender / GSMs', 'Male', 'Female', 'Other Gender', 'Characterizations', 'Heros', 'Neutral Characters', 'Villains', 'Appearances', 'Black Hair', 'Brown Hair', 'Blond Hair', 'Other Hair Colors', 'Blue Eyes', 'Brown Eyes', 'Other Eye Colors'];
+            data.forEach((d, i) => {
+                totalCountR++;
+                if (d['SEX'] == 'Male Characters') {
+                    eachCountR[1]++;
+                } else if (d['SEX'] == 'Female Characters') {
+                    eachCountR[2]++;
+                } else {
+                    eachCountR[3]++;
+                }
+
+                if (d['ALIGN'] == 'Good Characters') {
+                    eachCountR[5]++;
+                } else if (d['ALIGN'] == 'Neutral Characters') {
+                    eachCountR[6]++;
+                } else {
+                    eachCountR[7]++;
+                }
+                
+                if (d['HAIR'] == 'Black Hair') {
+                    eachCountR[9]++;
+                } else if (d['HAIR'] == 'Brown Hair') {
+                    eachCountR[10]++;
+                } else if (d['HAIR'] == 'Blond Hair') {
+                    eachCountR[11]++;
+                } else {
+                    eachCountR[12]++;
+                }
+                if (d['EYE'] == 'Blue Eyes') {
+                    eachCountR[13]++;
+                } else if (d['EYE'] == 'Brown Eyes') {
+                    eachCountR[14]++;
+                } else if (d['EYE'] != "") {
+                    eachCountR[15]++;
+                }
+            });
+
+            let yScaleR = d3.scaleLinear().domain([0, totalCountR]).range([0, 220]);
+            let xScaleR = d3.scaleLinear().domain([0, colCountR]).range([100, 600]);
+            
+            for (let i = 0; i < colCountR; i++) {
+                if (i != 0 && i != 4 && i != 8) {
+                    svg.append('rect')
+                        .attr('x', 300)
+                        .attr('y', xScaleR(i + 0.5))
+                        .attr('width', yScaleR(eachCountR[i]))
+                        .attr('height', 10)
+                        .style('fill', '#0272E8');
+                    svg.append('text')
+                        .attr('x', 300 + yScaleR(eachCountR[i]) + 5)
+                        .attr('y', xScaleR(i + 0.5) + 5)
+                        .attr('text-anchor', 'start')
+                        .attr('dominant-baseline', 'middle')
+                        .attr("font-size", "13px")
+                        .text(Math.floor(eachCountR[i] / totalCountR * 100) + '%')
+                        .style('fill', 'darkBlue')
+                        .style('font-family', 'Chakra Petch, sanserif');
+                    svg.append('text')
+                        .attr('x', 300)
+                        .attr('y', xScaleR(i))
+                        .attr('text-anchor', 'middle')
+                        .attr('dominant-baseline', 'hanging')
+                        .text(colNames[i])
+                        .style('fill', 'black')
+                        .style('font-size', 12)
+                        .style('font-family', 'Chakra Petch, sanserif');
+                } else {
+                    svg.append('line')
+                        .attr('x1', 0)
+                        .attr('x2', 600)
+                        .attr('y1', xScaleR(i + 0.8))
+                        .attr('y2', xScaleR(i + 0.8))
+                        .style('stroke', 'black')
+                        .style('stroke-width', 2)
+                        .style('stroke-dasharray', 10);
+                    svg.append('text')
+                        .attr('x', 300)
+                        .attr('y', xScaleR(i))
+                        .attr('text-anchor', 'middle')
+                        .attr('dominant-baseline', 'hanging')
+                        .text(colNames[i])
+                        .style('fill', 'black')
+                        .style('font-size', 20)
+                        .style('font-family', 'Chakra Petch, sanserif');
+                }
+            };
+            const width = 600;
+            const height = 600;
+
+            d3.json("../dataset/marveldata.json")
+                .then((data) => {
+                    let ldata = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                    let numAttr = 16;
+                    data.forEach((d, i) => {
+                        if (d['SEX'] == "Male Characters") {
+                            ldata[1]++;
+                        }
+                        if (d['SEX'] == "Female Characters") {
+                            ldata[2]++;
+                        }
+                        if (d['GSM'] != "" || (d['SEX'] != "Female Characters" && d['SEX'] != "Male Characters")) {
+                            ldata[3]++;
+                        }
+                        if (d['ALIGN'] == "Good Characters") {
+                            ldata[5]++;
+                        }
+                        if (d['ALIGN'] == "Neutral Characters") {
+                            ldata[6]++;
+                        }
+                        if (d['ALIGN'] == "Bad Characters") {
+                            ldata[7]++;
+                        }
+                        if (d['HAIR'] == "Black Hair") {
+                            ldata[9]++;
+                        }
+                        if (d['HAIR'] == "Brown Hair") {
+                            ldata[10]++;
+                        }
+                        if (d['HAIR'] == "Blond Hair") {
+                            ldata[11]++;
+                        }
+                        if (d['HAIR'] != "Black Hair" && d['HAIR'] != "Blonde Hair" && d['HAIR'] != "Brown Hair") {
+                            ldata[12]++;
+                        }
+                        if (d['EYE'] == "Blue Eyes") {
+                            ldata[13]++;
+                        }
+                        if (d['EYE'] == "Brown Eyes") {
+                            ldata[14]++;
+                        }
+                        if (d['EYE'] != "Blue Eyes" && d['EYE'] != "Brown Eyes" && d['EYE'] != "") {
+                            ldata[15]++;
+                        }
+
+                    });
+
+                    let lxScale = d3.scaleLinear().domain([0, 16376]).range([width / 2, 30]);
+                    let lyScale = d3.scaleLinear().domain([0, numAttr]).range([100, height]);
+                    for (let i = 1; i < numAttr; i++) {
+                        if (i != 4 && i != 8) {
+                            svg.append('rect')
+                                .attr('x', lxScale(ldata[i]))
+                                .attr('y', lyScale(i + 0.5))
+                                .attr('width', width / 2 - lxScale(ldata[i]))
+                                .attr('height', 10)
+                                .style("fill", "#DC0319");
+                            svg.append("text")
+                                .attr("text-anchor", "end")
+                                .attr("font-size", "13px")
+                                .attr("dominant-baseline", "middle")
+                                .attr("x", (lxScale(ldata[i]) - 5))
+                                .attr("y", (lyScale(i + 0.5) + 5))
+                                .style("fill", "#DC0319")
+                                .text(Math.floor(100 * ldata[i] / data.length) + "%")
+                                .style('font-family', 'Chakra Petch, sanserif');
+                            }
+                    }
+                });
+
+        });
+    </script>
+    <p></p>
+    <div class="container">
+      <svg width="100%" height="100%"></svg>
+    </div>
+    <script>
+      window.onload = function () {
+        var width = 800,
+          height = 600;
+        var main = d3
+          .select(".container svg")
+          .append("g")
+          .classed("main", true)
+          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        const superpowers = [
+          "Combat",
+          "Durability",
+          "Intelligence",
+          "Power",
+          "Speed",
+          "Strength",
+        ];
+        const powerrange = ["range1", "range2", "range3", "range4"];
+        // const svgWeb = d3.select("svg#webchart");
+        // const width2 = svgWeb.attr("width");
+        // const height2 = svgWeb.attr("height");
+
+        // 1.set basic information of the pie chart
+        var radius = 250,
+          // the length of fieldsname
+          total = 6,
+          // the level of web chart range1-range4
+          level = 4,
+          // the range
+          rangeMin = 0,
+          rangeMax = 250,
+          arc = 2 * Math.PI;
+        var onePiece = arc / total;
+        var polygons = {
+          webs: [],
+          webPoints: [],
+        };
+        for (var k = level; k > 0; k--) {
+          var webs = "",
+            webPoints = [];
+          var r = (radius / level) * k;
+          for (var i = 0; i < total; i++) {
+            var x = r * Math.sin(i * onePiece),
+              y = r * Math.cos(i * onePiece);
+            webs += x + "," + y + " ";
+            webPoints.push({
+              x: x,
+              y: y,
+            });
+          }
+          polygons.webs.push(webs);
+          polygons.webPoints.push(webPoints);
+          //   console.log(webs, webPoints);
+        }
+
+        var webs = main.append("g").classed("webs", true);
+        webs
+          .selectAll("polygon")
+          .data(polygons.webs)
+          .enter()
+          .append("polygon")
+          .attr("points", function (d) {
+            return d;
+          });
+
+        for (var i = 1; i < 4; i++) {
+          var first = polygons.webPoints[i - 1];
+          var second = polygons.webPoints[i];
+          
+          console.log("array:,", first, second);
+          for (var k = 1; k < 6; k++) {
+            var area = [];
+            // console.log(first[k]['y'])
+            let stringarea=`${first[k]['x']},${first[k]['y']},${first[k - 1]['x']},${first[k - 1]['y']},${second[k]['x']},${second[k]['y']},${second[k - 1]['x']},${second[k - 1]['y']}`
+            area.push(stringarea)
+            console.log('area',area)
+            var upperWeb = main.append("g").classed("upperWeb", true);
+            upperWeb
+              .selectAll("polygon")
+              .data(area)
+              .enter()
+              .append("polygon")
+              .attr('points',function(d){
+                  return d;
+              })
+              .attr("fill", "blue");
+          }
+        }
+
+        var lines = main.append("g").classed("lines", true);
+        lines
+          .selectAll("line")
+          .data(polygons.webPoints[0])
+          .enter()
+          .append("line")
+          .attr("x1", 0)
+          .attr("y1", 0)
+          .attr("x2", function (d) {
+            return d.x;
+          })
+          .attr("y2", function (d) {
+            return d.y;
+          })
+          .attr("stroke", "darkgrey")
+          .attr("stroke-dasharray", "10 5");
+
+        d3.csv("./superhero-powers.csv", d3.autoType).then((powers_data) => {
+          // console.log("POWERS: ", powers_data);
+          let dc_powers = {};
+          let marvel_powers = {};
+
+          superpowers.forEach((d, i) => {
+            const marvel_count = getCharacterByPower(
+              "Marvel Comics",
+              superpowers[i],
+              powers_data
+            );
+            marvel_powers[superpowers[i]] = marvel_count;
+            const dc_count = getCharacterByPower(
+              "DC Comics",
+              superpowers[i],
+              powers_data
+            );
+            dc_powers[superpowers[i]] = dc_count;
+          });
+          var areasData = [];
+          //   var values = data.values;
+          for (var k = 0; k < total; k++) {
+            for (var i = 1; i <= 4; i++) {
+              //var property="range"+i;
+              var value = marvel_powers[superpowers[k]];
+            //   console.log(value);
+              (area = ""), (points = []);
+              var r =
+                (radius * (value[powerrange[i]] - rangeMin)) /
+                (rangeMax - rangeMin);
+              var x = r * Math.sin(k * onePiece),
+                y = r * Math.cos(k * onePiece);
+              area += x + "," + y + " ";
+              points.push({
+                x: x,
+                y: y,
+              });
+            //   console.log(points);
+            }
+            areasData.push({
+              polygon: area,
+              points: points,
+            });
+          }
+          console.log("MARVEL ======== ", marvel_powers);
+          console.log("DC ======== ", dc_powers);
+        });
+
+        // GRAPH 2 data processing
+
+        var textPoints = [];
+        var textRadius = radius + 5;
+        for (var i = 0; i < total; i++) {
+          var x = textRadius * Math.sin(i * onePiece+(Math.PI/2)),
+            y = textRadius * Math.cos(i * onePiece+(Math.PI/2));
+          textPoints.push({
+            x: x,
+            y: y,
+            text: superpowers[i],
+          });
+        }
+        var texts = main.append("g").classed("texts", true);
+        texts
+          .selectAll("text")
+          .data(textPoints)
+          .enter()
+          .append("text")
+          .attr("x", function (d) {
+            return d.x;
+          })
+          .attr("y", function (d) {
+            return d.y;
+          })
+          .text(function (d, i) {
+            return d.text;
+          });
+
+        //   marvel_powers.forEach((d, i) => {});
+        function getCharacterByPower(creator, power, powers_data) {
+          let range1_count = 0;
+          let range2_count = 0;
+          let range3_count = 0;
+          let range4_count = 0;
+
+          powers_data.forEach((d, i) => {
+            if (
+              d["Creator"] == creator &&
+              d[superpowers[0]] != null &&
+              d[superpowers[1]] != null &&
+              d[superpowers[2]] != null &&
+              d[superpowers[3]] != null &&
+              d[superpowers[4]] != null &&
+              d[superpowers[5]] != null
+            ) {
+              if (d[power] <= 24) range1_count += 1;
+              else if (d[power] <= 49) range2_count += 1;
+              else if (d[power] <= 74) range3_count += 1;
+              else if (d[power] <= 105) range4_count += 1; // One value for Marvel is 105 instead of 100
+            }
+          });
+
+          const power_stat = {
+            range1: range1_count,
+            range2: range2_count,
+            range3: range3_count,
+            range4: range4_count,
+          };
+          return power_stat;
+        }
+      };
+    </script>
+  </body>
+</html>
