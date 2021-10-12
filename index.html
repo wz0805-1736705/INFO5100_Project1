@@ -77,14 +77,14 @@
 
             svg.append('image')
                 .attr('x', canvasCentre + 300)
-                .attr('y', 0.4 * height)
+                .attr('y', 0.5 * height)
                 .attr('width', 300)
-                .attr('height', 350)
+                .attr('height', 300)
                 .attr('href', '../pics/DC-gang.png');
             svg.append('image')
-                .attr('x', canvasCentre - 600)
+                .attr('x', canvasCentre - 550)
                 .attr('y', 175)
-                .attr('width', 350)
+                .attr('width', 300)
                 .attr('height', 300)
                 .attr('href', '../pics/Marvel-gang.png');
 
@@ -132,20 +132,20 @@
                     }
                 });
 
-                let yScaleR = d3.scaleLinear().domain([0, totalCountR]).range([0, 220]);
-                let xScaleR = d3.scaleLinear().domain([0, colCountR]).range([100, 600]);
+                let horizontalScaleR = d3.scaleLinear().domain([0, totalCountR]).range([0, (width / 2) - 100]);
+                let verticalScaleR = d3.scaleLinear().domain([0, colCountR]).range([100, height]);
 
                 for (let i = 0; i < colCountR; i++) {
                     if (i != 0 && i != 4 && i != 8) {
                         svg.append('rect')
                             .attr('x', canvasCentre)
-                            .attr('y', xScaleR(i + 0.5))
-                            .attr('width', yScaleR(eachCountR[i]))
+                            .attr('y', verticalScaleR(i + 0.5))
+                            .attr('width', horizontalScaleR(eachCountR[i]))
                             .attr('height', 10)
                             .style('fill', '#0272E8');
                         svg.append('text')
-                            .attr('x', canvasCentre + yScaleR(eachCountR[i]) + 5)
-                            .attr('y', xScaleR(i + 0.5) + 7)
+                            .attr('x', canvasCentre + horizontalScaleR(eachCountR[i]) + 5)
+                            .attr('y', verticalScaleR(i + 0.5) + 7)
                             .attr('text-anchor', 'start')
                             .attr('dominant-baseline', 'middle')
                             .attr("font-size", "13px")
@@ -154,7 +154,7 @@
                             .style('font-family', 'Alata, sans-serif');
                         svg.append('text')
                             .attr('x', canvasCentre)
-                            .attr('y', xScaleR(i))
+                            .attr('y', verticalScaleR(i))
                             .attr('text-anchor', 'middle')
                             .attr('dominant-baseline', 'hanging')
                             .text(colNames[i])
@@ -164,7 +164,7 @@
                     } else if (i == 0) {
                         svg.append('ellipse')
                             .attr("cx", canvasCentre - 250)
-                            .attr("cy", xScaleR(i + 2.95))
+                            .attr("cy", verticalScaleR(i + 2.95))
                             .attr('rx', 55)
                             .attr('ry', 26)
                             .style("fill", "yellow")
@@ -172,7 +172,7 @@
                             .style("stroke-width", 5)
                         svg.append('text')
                             .attr('x', canvasCentre - 250)
-                            .attr('y', xScaleR(i + 2.7))
+                            .attr('y', verticalScaleR(i + 2.7))
                             .attr('text-anchor', 'middle')
                             .attr('dominant-baseline', 'hanging')
                             .text(colNames[i])
@@ -182,16 +182,16 @@
                             .style('font-family', 'Luckiest Guy, cursive');
                     } else if (i == 4) {
                         svg.append('ellipse')
-                            .attr("cx", canvasCentre + 250)
-                            .attr("cy", xScaleR(i + 2.5))
+                            .attr("cx", canvasCentre + 350)
+                            .attr("cy", verticalScaleR(i + 2.5))
                             .attr('rx', 80)
                             .attr('ry', 35)
                             .style("fill", "yellow")
                             .style("stroke", "#5bcf72")
                             .style("stroke-width", 5)
                         svg.append('text')
-                            .attr('x', canvasCentre + 250)
-                            .attr('y', xScaleR(i + 2.3))
+                            .attr('x', canvasCentre + 350)
+                            .attr('y', verticalScaleR(i + 2.3))
                             .attr('text-anchor', 'middle')
                             .attr('dominant-baseline', 'hanging')
                             .text(colNames[i])
@@ -202,7 +202,7 @@
                     } else if (i == 8) {
                         svg.append('ellipse')
                             .attr("cx", canvasCentre - 250)
-                            .attr("cy", xScaleR(i + 2.65))
+                            .attr("cy", verticalScaleR(i + 2.65))
                             .attr('rx', 80)
                             .attr('ry', 35)
                             .style("fill", "yellow")
@@ -210,7 +210,7 @@
                             .style("stroke-width", 5)
                         svg.append('text')
                             .attr('x', canvasCentre - 250)
-                            .attr('y', xScaleR(i + 2.4))
+                            .attr('y', verticalScaleR(i + 2.4))
                             .attr('text-anchor', 'middle')
                             .attr('dominant-baseline', 'hanging')
                             .text(colNames[i])
@@ -270,13 +270,14 @@
 
                         });
 
-                        let lxScale = d3.scaleLinear().domain([0, 16376]).range([width / 2, 30]);
+                        let lxScale = d3.scaleLinear().domain([0, 16376]).range([canvasCentre, 100]);
                         let lyScale = d3.scaleLinear().domain([0, numAttr]).range([100, height]);
+
                         for (let i = 1; i < numAttr; i++) {
                             if (i != 4 && i != 8) {
                                 svg.append('rect')
                                     .attr('x', lxScale(ldata[i]))
-                                    .attr('y', lyScale(i + 0.5))
+                                    .attr('y', lyScale(i + 0.53))
                                     .attr('width', width / 2 - lxScale(ldata[i]))
                                     .attr('height', 10)
                                     .style("fill", "#DC0319");
