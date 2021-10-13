@@ -25,9 +25,9 @@
         stroke-dasharray: 10 5;
     }
     
-    .webs polygon:nth-child(odd) {
+    /* .webs polygon:nth-child(odd) {
         fill: blue;
-    }
+    } */
     
     .areas polygon {
         fill-opacity: 0.5;
@@ -41,6 +41,7 @@
     
     .texts text {
         text-anchor: middle;
+        color:blue;
     }
     
     .main-graphs {
@@ -300,222 +301,275 @@
             <svg width="100%" height="100%"></svg>
         </div>
         <script>
-            window.onload = function() {
-                var width = 800,
-                    height = 600;
-                var main = d3
-                    .select(".container svg")
-                    .append("g")
-                    .classed("main", true)
-                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-                const superpowers = [
-                    "Combat",
-                    "Durability",
-                    "Intelligence",
-                    "Power",
-                    "Speed",
-                    "Strength",
-                ];
-                const powerrange = ["range1", "range2", "range3", "range4"];
-                // const svgWeb = d3.select("svg#webchart");
-                // const width2 = svgWeb.attr("width");
-                // const height2 = svgWeb.attr("height");
+            window.onload = function () {
+        var width = 800,
+          height = 600;
+        var main = d3
+          .select(".container svg")
+          .append("g")
+          .classed("main", true)
+          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        const superpowers = [
+          "Combat",
+          "Durability",
+          "Intelligence",
+          "Power",
+          "Speed",
+          "Strength",
+        ];
+        const powerrange = ["range1", "range2", "range3", "range4"];
+        const colorScale = d3
+          .scaleLinear()
+          .domain([0, 1])
+          .range([d3.rgb("#000000"), d3.rgb("#ff0000")])
+          .interpolate(d3.interpolateHcl);
+        //const
+        // const svgWeb = d3.select("svg#webchart");
+        // const width2 = svgWeb.attr("width");
+        // const height2 = svgWeb.attr("height");
 
-                // 1.set basic information of the pie chart
-                var radius = 250,
-                    // the length of fieldsname
-                    total = 6,
-                    // the level of web chart range1-range4
-                    level = 4,
-                    // the range
-                    rangeMin = 0,
-                    rangeMax = 250,
-                    arc = 2 * Math.PI;
-                var onePiece = arc / total;
-                var polygons = {
-                    webs: [],
-                    webPoints: [],
-                };
-                for (var k = level; k > 0; k--) {
-                    var webs = "",
-                        webPoints = [];
-                    var r = (radius / level) * k;
-                    for (var i = 0; i < total; i++) {
-                        var x = r * Math.sin(i * onePiece),
-                            y = r * Math.cos(i * onePiece);
-                        webs += x + "," + y + " ";
-                        webPoints.push({
-                            x: x,
-                            y: y,
-                        });
-                    }
-                    polygons.webs.push(webs);
-                    polygons.webPoints.push(webPoints);
-                    //   console.log(webs, webPoints);
+        // 1.set basic information of the pie chart
+        var radius = 250,
+          // the length of fieldsname
+          total = 6,
+          // the level of web chart range1-range4
+          level = 4,
+          // the range
+          rangeMin = 0,
+          rangeMax = 250,
+          arc = 2 * Math.PI;
+        var onePiece = arc / total;
+        var polygons = {
+          webs: [],
+          webPoints: [],
+        };
+        for (var k = level; k > 0; k--) {
+          var webs = "",
+            webPoints = [];
+          var r = (radius / level) * k;
+          for (var i = 0; i < total; i++) {
+            var x = r * Math.sin(i * onePiece),
+              y = r * Math.cos(i * onePiece);
+            webs += x + "," + y + " ";
+            webPoints.push({
+              x: x,
+              y: y,
+            });
+          }
+          polygons.webs.push(webs);
+          polygons.webPoints.push(webPoints);
+          //   console.log(webs, webPoints);
+        }
+        
+
+        d3.csv("./superhero-powers.csv", d3.autoType).then((powers_data) => {
+          // console.log("POWERS: ", powers_data);
+          let dc_powers = {};
+          let marvel_powers = {};
+
+          superpowers.forEach((d, i) => {
+            const marvel_count = getCharacterByPower(
+              "Marvel Comics",
+              superpowers[i],
+              powers_data
+            );
+            marvel_powers[superpowers[i]] = marvel_count;
+            const dc_count = getCharacterByPower(
+              "DC Comics",
+              superpowers[i],
+              powers_data
+            );
+            dc_powers[superpowers[i]] = dc_count;
+          });
+          var areasData = [];
+          //   var values = data.values;
+          for (var k = 0; k < total; k++) {
+            for (var i = 1; i <= 4; i++) {
+              //var property="range"+i;
+              var value = marvel_powers[superpowers[k]];
+              //   console.log(value);
+              (area = ""), (points = []);
+              var r =
+                (radius * (value[powerrange[i]] - rangeMin)) /
+                (rangeMax - rangeMin);
+              var x = r * Math.sin(k * onePiece),
+                y = r * Math.cos(k * onePiece);
+              area += x + "," + y + " ";
+              points.push({
+                x: x,
+                y: y,
+              });
+              //   console.log(points);
+            }
+            areasData.push({
+              polygon: area,
+              points: points,
+            });
+          }
+
+          for (var i = 1; i < 4; i++) {
+            var first = polygons.webPoints[i - 1];
+            var second = polygons.webPoints[i];
+            // console.log("array:,", first, second);
+            for (var k = 0; k < 6; k++) {
+              var area = [];
+              // console.log(first[k]['y'])
+              if (i == 1) {
+                if (k != 5) {
+                  let stringarea = `${0},${0},${first[k]["x"]},${
+                    first[k]["y"]
+                  },${first[k + 1]["x"]},${first[k + 1]["y"]}`;
+                  area.push(stringarea);
+                  console.log("stringarea:", stringarea);
+                } else {
+                  let stringarea = `${0},${0},${first[k]["x"]},${
+                    first[k]["y"]
+                  },${first[0]["x"]},${first[0]["y"]}`;
+                  area.push(stringarea);
+                  console.log("stringarea:", stringarea);
                 }
-
-                var webs = main.append("g").classed("webs", true);
-                webs
-                    .selectAll("polygon")
-                    .data(polygons.webs)
-                    .enter()
-                    .append("polygon")
-                    .attr("points", function(d) {
-                        return d;
-                    });
-
-                for (var i = 1; i < 4; i++) {
-                    var first = polygons.webPoints[i - 1];
-                    var second = polygons.webPoints[i];
-
-                    console.log("array:,", first, second);
-                    for (var k = 1; k < 6; k++) {
-                        var area = [];
-                        // console.log(first[k]['y'])
-                        let stringarea = `${first[k]['x']},${first[k]['y']},${first[k - 1]['x']},${first[k - 1]['y']},${second[k]['x']},${second[k]['y']},${second[k - 1]['x']},${second[k - 1]['y']}`
-                        area.push(stringarea)
-                        console.log('area', area)
-                        var upperWeb = main.append("g").classed("upperWeb", true);
-                        upperWeb
-                            .selectAll("polygon")
-                            .data(area)
-                            .enter()
-                            .append("polygon")
-                            .attr('points', function(d) {
-                                return d;
-                            })
-                            .attr("fill", "blue");
-                    }
+              } else {
+                if (k != 5) {
+                  let stringarea = `${first[k]["x"]},${first[k]["y"]},${
+                    second[k]["x"]
+                  },${second[k]["y"]},${second[k + 1]["x"]},${
+                    second[k + 1]["y"]
+                  },${first[k + 1]["x"]},${first[k + 1]["y"]}`;
+                  area.push(stringarea);
+                  // console.log("stringarea:", stringarea);
+                } else {
+                  let stringarea = `${first[k]["x"]},${first[k]["y"]},${second[k]["x"]},${second[k]["y"]},${second[0]["x"]},${second[0]["y"]},${first[0]["x"]},${first[0]["y"]}`;
+                  area.push(stringarea);
+                  // console.log("stringarea:", stringarea);
                 }
+              }
+              // console.log("area", area);
+              var sum = 354;
+              console.log(
+                "k",
+                k,
+                "sum:",
+                sum,
+                "data:",
+                marvel_powers[superpowers[k]][powerrange[i - 1]],
+                "ratio:",
+                marvel_powers[superpowers[k]][powerrange[i - 1]] / sum
+              );
+              console.log(
+                marvel_powers[superpowers[k]][powerrange[i - 1]] / sum
+              );
+              var upperWeb = main.append("g").classed("upperWeb", true);
+              upperWeb
+                .selectAll("polygon")
+                .data(area)
+                .enter()
+                .append("polygon")
+                .attr("points", function (d) {
+                  return d;
+                })
+                .attr(
+                  "fill",
+                  colorScale(
+                    marvel_powers[superpowers[k]][powerrange[i - 1]] / sum
+                  )
+                );
+            }
+          }
+          
+          console.log("MARVEL ======== ", marvel_powers);
+          console.log("DC ======== ", dc_powers);
+        });
 
-                var lines = main.append("g").classed("lines", true);
-                lines
-                    .selectAll("line")
-                    .data(polygons.webPoints[0])
-                    .enter()
-                    .append("line")
-                    .attr("x1", 0)
-                    .attr("y1", 0)
-                    .attr("x2", function(d) {
-                        return d.x;
-                    })
-                    .attr("y2", function(d) {
-                        return d.y;
-                    })
-                    .attr("stroke", "darkgrey")
-                    .attr("stroke-dasharray", "10 5");
+        var webs = main.append("g").classed("webs", true);
+          webs
+            .selectAll("polygon")
+            .data(polygons.webs)
+            .enter()
+            .append("polygon")
+            .attr("points", function (d) {
+              return d;
+            });
 
-                d3.csv("./superhero-powers.csv", d3.autoType).then((powers_data) => {
-                    // console.log("POWERS: ", powers_data);
-                    let dc_powers = {};
-                    let marvel_powers = {};
+          var lines = main.append("g").classed("lines", true);
+          lines
+            .selectAll("line")
+            .data(polygons.webPoints[0])
+            .enter()
+            .append("line")
+            .attr("x1", 0)
+            .attr("y1", 0)
+            .attr("x2", function (d) {
+              return d.x;
+            })
+            .attr("y2", function (d) {
+              return d.y;
+            })
+            .attr("stroke", "darkgrey")
+            .attr("stroke-dasharray", "10 5");
 
-                    superpowers.forEach((d, i) => {
-                        const marvel_count = getCharacterByPower(
-                            "Marvel Comics",
-                            superpowers[i],
-                            powers_data
-                        );
-                        marvel_powers[superpowers[i]] = marvel_count;
-                        const dc_count = getCharacterByPower(
-                            "DC Comics",
-                            superpowers[i],
-                            powers_data
-                        );
-                        dc_powers[superpowers[i]] = dc_count;
-                    });
-                    var areasData = [];
-                    //   var values = data.values;
-                    for (var k = 0; k < total; k++) {
-                        for (var i = 1; i <= 4; i++) {
-                            //var property="range"+i;
-                            var value = marvel_powers[superpowers[k]];
-                            //   console.log(value);
-                            (area = ""), (points = []);
-                            var r =
-                                (radius * (value[powerrange[i]] - rangeMin)) /
-                                (rangeMax - rangeMin);
-                            var x = r * Math.sin(k * onePiece),
-                                y = r * Math.cos(k * onePiece);
-                            area += x + "," + y + " ";
-                            points.push({
-                                x: x,
-                                y: y,
-                            });
-                            //   console.log(points);
-                        }
-                        areasData.push({
-                            polygon: area,
-                            points: points,
-                        });
-                    }
-                    console.log("MARVEL ======== ", marvel_powers);
-                    console.log("DC ======== ", dc_powers);
-                });
+        // GRAPH 2 data processing
 
-                // GRAPH 2 data processing
+        var textPoints = [];
+        var textRadius = radius + 5;
+        for (var i = 0; i < total; i++) {
+          var x = textRadius * Math.sin(i * onePiece + Math.PI / 2),
+            y = textRadius * Math.cos(i * onePiece + Math.PI / 2);
+          textPoints.push({
+            x: x,
+            y: y,
+            text: superpowers[i],
+          });
+        }
+        var texts = main.append("g").classed("texts", true);
+        texts
+          .selectAll("text")
+          .data(textPoints)
+          .enter()
+          .append("text")
+          .attr("x", function (d) {
+            return d.x;
+          })
+          .attr("y", function (d) {
+            return d.y;
+          })
+          .text(function (d, i) {
+            return d.text;
+          });
 
-                var textPoints = [];
-                var textRadius = radius + 5;
-                for (var i = 0; i < total; i++) {
-                    var x = textRadius * Math.sin(i * onePiece + (Math.PI / 2)),
-                        y = textRadius * Math.cos(i * onePiece + (Math.PI / 2));
-                    textPoints.push({
-                        x: x,
-                        y: y,
-                        text: superpowers[i],
-                    });
-                }
-                var texts = main.append("g").classed("texts", true);
-                texts
-                    .selectAll("text")
-                    .data(textPoints)
-                    .enter()
-                    .append("text")
-                    .attr("x", function(d) {
-                        return d.x;
-                    })
-                    .attr("y", function(d) {
-                        return d.y;
-                    })
-                    .text(function(d, i) {
-                        return d.text;
-                    });
+        //   marvel_powers.forEach((d, i) => {});
+        function getCharacterByPower(creator, power, powers_data) {
+          let range1_count = 0;
+          let range2_count = 0;
+          let range3_count = 0;
+          let range4_count = 0;
 
-                //   marvel_powers.forEach((d, i) => {});
-                function getCharacterByPower(creator, power, powers_data) {
-                    let range1_count = 0;
-                    let range2_count = 0;
-                    let range3_count = 0;
-                    let range4_count = 0;
+          powers_data.forEach((d, i) => {
+            if (
+              d["Creator"] == creator &&
+              d[superpowers[0]] != null &&
+              d[superpowers[1]] != null &&
+              d[superpowers[2]] != null &&
+              d[superpowers[3]] != null &&
+              d[superpowers[4]] != null &&
+              d[superpowers[5]] != null
+            ) {
+              if (d[power] <= 24) range1_count += 1;
+              else if (d[power] <= 49) range2_count += 1;
+              else if (d[power] <= 74) range3_count += 1;
+              else if (d[power] <= 105) range4_count += 1; // One value for Marvel is 105 instead of 100
+            }
+          });
 
-                    powers_data.forEach((d, i) => {
-                        if (
-                            d["Creator"] == creator &&
-                            d[superpowers[0]] != null &&
-                            d[superpowers[1]] != null &&
-                            d[superpowers[2]] != null &&
-                            d[superpowers[3]] != null &&
-                            d[superpowers[4]] != null &&
-                            d[superpowers[5]] != null
-                        ) {
-                            if (d[power] <= 24) range1_count += 1;
-                            else if (d[power] <= 49) range2_count += 1;
-                            else if (d[power] <= 74) range3_count += 1;
-                            else if (d[power] <= 105) range4_count += 1; // One value for Marvel is 105 instead of 100
-                        }
-                    });
-
-                    const power_stat = {
-                        range1: range1_count,
-                        range2: range2_count,
-                        range3: range3_count,
-                        range4: range4_count,
-                    };
-                    return power_stat;
-                }
-            };
-        </script>
+          const power_stat = {
+            range1: range1_count,
+            range2: range2_count,
+            range3: range3_count,
+            range4: range4_count,
+          };
+          return power_stat;
+        }
+      };
+    </script>
     </div>
 </body>
 
