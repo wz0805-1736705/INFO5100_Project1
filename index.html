@@ -23,7 +23,7 @@
         fill-opacity: 0.5;
         stroke: gray;
         stroke-dasharray: 10 5;
-        stroke-width: 5.5px;
+        stroke-width: 3.5px;
     }
     /* .webs polygon:nth-child(odd) {
         fill: blue;
@@ -45,6 +45,12 @@
     
     .main-graphs {
         background-color: #000;
+    }
+    
+    .legend rect {
+        fill: white;
+        stroke: black;
+        opacity: 0.8;
     }
 </style>
 
@@ -374,15 +380,12 @@
                     "Strength",
                 ];
                 const powerrange = ["range1", "range2", "range3", "range4"];
-                const colorScale = d3
-                    .scaleLinear()
-                    .domain([0, 1])
-                    .range([d3.rgb("#000000"), d3.rgb("#ff0000")])
-                    .interpolate(d3.interpolateHcl);
-                //const
-                // const svgWeb = d3.select("svg#webchart");
-                // const width2 = svgWeb.attr("width");
-                // const height2 = svgWeb.attr("height");
+                //TODO
+                //   let colorScale = d3
+                //     .scaleLinear()
+                //     .domain([0, 1])
+                //     .range(['white', 'darkred'])
+                //     .interpolate(d3.interpolateReds);
 
                 // 1.set basic information of the pie chart
                 var radius = 250,
@@ -416,12 +419,32 @@
                     polygons.webPoints.push(webPoints);
                     //   console.log(webs, webPoints);
                 }
+                console.log("polygons", polygons);
 
+                //   Legend(
+                //     d3.scaleOrdinal(
+                //       [
+                //         "<10",
+                //         "10-19",
+                //         "20-29",
+                //         "30-39",
+                //         "40-49",
+                //         "50-59",
+                //         "60-69",
+                //         "70-79",
+                //         "≥80",
+                //       ],
+                //       d3.schemeSpectral[10]
+                //     ),
+                //     {
+                //       title: "Age (years)",
+                //       tickSize: 0,
+                //     }
+                //   );
                 d3.csv("./superhero-powers.csv", d3.autoType).then((powers_data) => {
                     // console.log("POWERS: ", powers_data);
                     let dc_powers = {};
                     let marvel_powers = {};
-
                     superpowers.forEach((d, i) => {
                         const marvel_count = getCharacterByPower(
                             "Marvel Comics",
@@ -439,7 +462,7 @@
                     var areasData = [];
                     //   var values = data.values;
                     for (var k = 0; k < total; k++) {
-                        for (var i = 1; i <= 4; i++) {
+                        for (var i = 0; i < 4; i++) {
                             //var property="range"+i;
                             var value = marvel_powers[superpowers[k]];
                             //   console.log(value);
@@ -461,7 +484,10 @@
                             points: points,
                         });
                     }
+                    console.log(areasData);
 
+                    // const colorScale = d3.scaleOrdinal(d3.schemeReds[6]);
+                    // console.log("scale", colorScale);
                     for (var i = 1; i < 4; i++) {
                         var first = polygons.webPoints[i - 1];
                         var second = polygons.webPoints[i];
@@ -475,13 +501,13 @@
                       first[k]["y"]
                     },${first[k + 1]["x"]},${first[k + 1]["y"]}`;
                                     area.push(stringarea);
-                                    console.log("stringarea:", stringarea);
+                                    // console.log("stringarea:", stringarea);
                                 } else {
                                     let stringarea = `${0},${0},${first[k]["x"]},${
                       first[k]["y"]
                     },${first[0]["x"]},${first[0]["y"]}`;
                                     area.push(stringarea);
-                                    console.log("stringarea:", stringarea);
+                                    // console.log("stringarea:", stringarea);
                                 }
                             } else {
                                 if (k != 5) {
@@ -501,16 +527,6 @@
                             // console.log("area", area);
                             var sum = 354;
                             console.log(
-                                "k",
-                                k,
-                                "sum:",
-                                sum,
-                                "data:",
-                                marvel_powers[superpowers[k]][powerrange[i - 1]],
-                                "ratio:",
-                                marvel_powers[superpowers[k]][powerrange[i - 1]] / sum
-                            );
-                            console.log(
                                 marvel_powers[superpowers[k]][powerrange[i - 1]] / sum
                             );
                             var upperWeb = main.append("g").classed("upperWeb", true);
@@ -522,17 +538,75 @@
                                 .attr("points", function(d) {
                                     return d;
                                 })
-                                .attr(
-                                    "fill",
-                                    colorScale(
-                                        marvel_powers[superpowers[k]][powerrange[i - 1]] / sum
-                                    )
-                                );
+                                .attr("fill", function(d) {
+                                    if (i < 3) {
+                                        return d3.interpolateReds(
+                                            marvel_powers[superpowers[k]][powerrange[i - 1]] / sum
+                                        );
+                                    } else {
+                                        return d3.interpolateReds(
+                                            marvel_powers[superpowers[k]][powerrange[i]] / sum);
+
+                                    }
+                                });
+                            //   .attr("fill", d=>function(d) {
+                            //     if ( i< 3) {
+                            //       return colorScale(
+                            //         marvel_powers[superpowers[k]][powerrange[i - 1]] / sum
+                            //       );
+                            //     } else {
+                            //       console.log(
+                            //         "k",
+                            //         k,
+                            //         "sum:",
+                            //         sum,
+                            //         "data:",
+                            //         marvel_powers[superpowers[k]][powerrange[i]],
+                            //         "ratio:",
+                            //         marvel_powers[superpowers[k]][powerrange[i]] / sum
+                            //       );
+                            //       return colorScale(
+                            //         marvel_powers[superpowers[k]][powerrange[i]] / sum
+                            //       );
+                            //     }
+                            //   });
                         }
                     }
-
                     console.log("MARVEL ======== ", marvel_powers);
                     console.log("DC ======== ", dc_powers);
+
+                    var lines = main.append("g").classed("lines", true);
+                    lines
+                        .selectAll("line")
+                        .data(polygons.webPoints[0])
+                        .enter()
+                        .append("line")
+                        .attr("x1", 0)
+                        .attr("y1", 0)
+                        .attr("x2", function(d) {
+                            return d.x;
+                        })
+                        .attr("y2", function(d) {
+                            return d.y;
+                        })
+                        .attr("stroke", "darkgrey")
+                        .attr("stroke-dasharray", "10 5");
+
+                    let annotations = main.append("g").attr("id", "annotations");
+                    const powerScale = d3.scaleLinear().domain([0, 100]).range([0, 250]);
+                    let bottomAxis = d3
+                        .axisBottom(powerScale)
+                        .tickSize(10)
+                        .ticks(0, 250, 62.5)
+                        .tickFormat("");
+                    annotations
+                        .append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "rotate (-30)")
+                        .attr("stroke-width", "5px")
+                        .call(bottomAxis);
+
+
                 });
 
                 var webs = main.append("g").classed("webs", true);
@@ -545,36 +619,17 @@
                         return d;
                     });
 
-                var lines = main.append("g").classed("lines", true);
-                lines
-                    .selectAll("line")
-                    .data(polygons.webPoints[0])
-                    .enter()
-                    .append("line")
-                    .attr("x1", 0)
-                    .attr("y1", 0)
-                    .attr("x2", function(d) {
-                        return d.x;
-                    })
-                    .attr("y2", function(d) {
-                        return d.y;
-                    })
-                    .attr("stroke", "darkgrey")
-                    .attr("stroke-dasharray", "10 5");
+                // legend = main
+                // .append("g")
+                // .classed("legend",true);
 
-                let annotations = main.append("g").attr("id", "annotations");
-                const powerScale = d3.scaleLinear().domain([0, 100]).range([0, 250]);
-                let bottomAxis = d3.axisBottom(powerScale).tickSize(10)
-                    .ticks(4)
-                    .tickFormat("");
-                annotations
-                    .append("g")
-                    .attr("class", "x axis")
-                    .attr(
-                        "transform",
-                        "rotate (-30)"
-                    )
-                    .call(bottomAxis);
+                // legend.selectAll("legend")
+                // .attr("transform", "translate(50,30)")
+                // .attr("title", "Number of heroes")
+                // .style("font-size", "12px")
+                // .call(d3.legend);
+
+
 
                 // GRAPH 2 data processing
                 var textPoints = [];
@@ -600,12 +655,15 @@
                     .attr("y", function(d) {
                         return d.y;
                     })
-                    .style("fill", "red")
-                    .style("font-size", 15)
-                    .style("font-family", "Chakra Petch, sanserif")
+                    .style("fill", "white")
+                    .style("font-size", 16)
+                    .style("font-family", "Alata, sans-serif")
                     .text(function(d, i) {
                         return d.text;
                     });
+
+
+                // webs.raise();
 
                 //   marvel_powers.forEach((d, i) => {});
                 function getCharacterByPower(creator, power, powers_data) {
