@@ -394,13 +394,13 @@
                 ANALYZING SUPER POWERS
             </p>
             <p class="description-2">
-                For each superpower, the radar chart depicts the ratio of characters that have a power rating within the given band.
+                For each superpower, the radar chart depicts the ratio of characters that have a power rating in the given band.
             </p>
             <div class="column">
-                <svg id="marvel" width="500" height="500"></svg>
+                <svg id="marvel" width="500" height="550"></svg>
             </div>
             <div class="column">
-                <svg id="dc" width="500" height="500"></svg>
+                <svg id="dc" width="500" height="550"></svg>
             </div>
         </div>
         <script>
@@ -835,6 +835,73 @@
                         .attr("points", function(d) {
                             return d;
                         });
+
+                    // MARVEL LEGEND
+                    let xBase = -175;
+                    let yBase = 250;
+                    let division = 35;
+                    main.append("text")
+                        .attr("x", xBase - 15)
+                        .attr("y", yBase + division / 2)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "15px")
+                        .text("0.1")
+                        .style("fill", "white")
+                        .style("font-family", "Alata, sans-serif");
+
+                    for (let i = 0; i < 10; i++) {
+                        main.append("rect")
+                            .attr("x", xBase)
+                            .attr("y", yBase)
+                            .attr("width", division)
+                            .attr("height", division)
+                            .style("fill", colorMarvelScale(i / 10));
+                        xBase = xBase + division;
+                    }
+
+                    main.append("text")
+                        .attr("x", xBase + 10)
+                        .attr("y", yBase + division / 2)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "15px")
+                        .text("1")
+                        .style("fill", "white")
+                        .style("font-family", "Alata, sans-serif");
+
+                    // DC LEGEND
+                    let xBase_dc = -175;
+                    let yBase_dc = 250
+                    main_dc.append("text")
+                        .attr("x", xBase_dc - 15)
+                        .attr("y", yBase_dc + division / 2)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "15px")
+                        .text("0.1")
+                        .style("fill", "white")
+                        .style("font-family", "Alata, sans-serif");
+
+                    for (let i = 0; i < 10; i++) {
+                        main_dc.append("rect")
+                            .attr("x", xBase_dc)
+                            .attr("y", yBase_dc)
+                            .attr("width", division)
+                            .attr("height", division)
+                            .style("fill", colorDcScale(i / 10));
+                        xBase_dc = xBase_dc + division;
+                    }
+
+                    main_dc.append("text")
+                        .attr("x", xBase + 10)
+                        .attr("y", yBase + division / 2)
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "15px")
+                        .text("1")
+                        .style("fill", "white")
+                        .style("font-family", "Alata, sans-serif");
                 });
 
 
