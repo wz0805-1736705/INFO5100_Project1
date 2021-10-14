@@ -629,17 +629,57 @@
                         .scaleLinear()
                         .domain([0, 100])
                         .range([0, radius]);
+
                     let bottomAxis = d3
-                        .axisBottom(powerScale)
-                        .tickSize(10)
-                        .ticks(4)
-                        .tickFormat("");
+                        .axisBottom(powerScale).ticks(4).tickFormat("");
                     annotations
                         .append("g")
                         .attr("class", "x axis")
-                        .attr("transform", "rotate (-90)")
+                        .attr("transform", "rotate (-30)")
                         .attr("stroke-width", "5px")
                         .call(bottomAxis);
+
+                    annotations
+                        .append("text")
+                        .attr("x", 23)
+                        .attr("y", -5)
+                        .attr("text-anchor", "start")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "8px")
+                        .text("0-24")
+                        .style("fill", "black")
+                        .style("font-family", "Alata, sans-serif")
+                    annotations
+                        .append("text")
+                        .attr("x", 55)
+                        .attr("y", -22)
+                        .attr("text-anchor", "start")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "8px")
+                        .text("25-49")
+                        .style("fill", "black")
+                        .style("font-family", "Alata, sans-serif")
+                    annotations
+                        .append("text")
+                        .attr("x", 95)
+                        .attr("y", -40)
+                        .attr("text-anchor", "start")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "8px")
+                        .text("50-74")
+                        .style("fill", "black")
+                        .style("font-family", "Alata, sans-serif")
+                    annotations
+                        .append("text")
+                        .attr("x", 135)
+                        .attr("y", -65)
+                        .attr("text-anchor", "start")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "8px")
+                        .text("75-100")
+                        .style("fill", "black")
+                        .style("font-family", "Alata, sans-serif")
+
 
                     // DC
                     var lines_dc = main_dc.append("g").classed("lines", true);
@@ -661,31 +701,68 @@
 
                     let annotations_dc = main_dc.append("g").attr("id", "annotations");
                     let bottomAxis_dc = d3
-                        .axisBottom(powerScale)
-                        .tickSize(10)
-                        .ticks(4)
-                        .tickFormat("");
+                        .axisBottom(powerScale).ticks(4).tickFormat("");
                     annotations_dc
                         .append("g")
                         .attr("class", "x axis")
-                        .attr("transform", "rotate (-90)")
+                        .attr("transform", "rotate (-30)")
                         .attr("stroke-width", "5px")
                         .call(bottomAxis_dc);
+                    annotations_dc
+                        .append("text")
+                        .attr("x", 23)
+                        .attr("y", -5)
+                        .attr("text-anchor", "start")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "8px")
+                        .text("0-24")
+                        .style("fill", "black")
+                        .style("font-family", "Alata, sans-serif")
+                    annotations_dc
+                        .append("text")
+                        .attr("x", 55)
+                        .attr("y", -22)
+                        .attr("text-anchor", "start")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "8px")
+                        .text("25-49")
+                        .style("fill", "black")
+                        .style("font-family", "Alata, sans-serif")
+                    annotations_dc
+                        .append("text")
+                        .attr("x", 95)
+                        .attr("y", -40)
+                        .attr("text-anchor", "start")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "8px")
+                        .text("50-74")
+                        .style("fill", "black")
+                        .style("font-family", "Alata, sans-serif")
+                    annotations_dc
+                        .append("text")
+                        .attr("x", 135)
+                        .attr("y", -65)
+                        .attr("text-anchor", "start")
+                        .attr("dominant-baseline", "middle")
+                        .attr("font-size", "8px")
+                        .text("75-100")
+                        .style("fill", "black")
+                        .style("font-family", "Alata, sans-serif")
 
                     main
                         .append("image")
-                        .attr("x", -40)
-                        .attr("y", -35)
-                        .attr("width", 75)
-                        .attr("height", 75)
+                        .attr("x", -23)
+                        .attr("y", -23)
+                        .attr("width", 45)
+                        .attr("height", 45)
                         .attr("href", "../pics/marvel_logo.png");
 
                     main_dc
                         .append("image")
-                        .attr("x", -30)
-                        .attr("y", -30)
-                        .attr("width", 60)
-                        .attr("height", 60)
+                        .attr("x", -20)
+                        .attr("y", -20)
+                        .attr("width", 40)
+                        .attr("height", 40)
                         .attr("href", "../pics/dc_logo.png");
                 });
 
