@@ -394,7 +394,7 @@
                 ANALYZING SUPER POWERS
             </p>
             <p class="description-2">
-                For each superpower, the radar chart depicts the ratio of characters that have a power rating in the given band.
+                For each superpower, the radar chart depicts the ratio of total characters whose power rating falls within the given band.
             </p>
             <div class="column">
                 <svg id="marvel" width="500" height="550"></svg>
@@ -483,31 +483,6 @@
                         );
                         dc_powers[superpowers[i]] = dc_count;
                     });
-                    var areasData = [];
-
-                    for (var k = 0; k < total; k++) {
-                        for (var i = 0; i < 4; i++) {
-                            //var property="range"+i;
-                            var value = marvel_powers[superpowers[k]];
-                            //   console.log(value);
-                            (area = ""), (points = []);
-                            var r =
-                                (radius * (value[powerrange[i]] - rangeMin)) /
-                                (rangeMax - rangeMin);
-                            var x = r * Math.sin(k * onePiece),
-                                y = r * Math.cos(k * onePiece);
-                            area += x + "," + y + " ";
-                            points.push({
-                                x: x,
-                                y: y,
-                            });
-                            //   console.log(points);
-                        }
-                        areasData.push({
-                            polygon: area,
-                            points: points,
-                        });
-                    }
 
                     // MARVEL
                     const colorMarvelScale = d3
@@ -525,7 +500,7 @@
                         for (var k = 0; k < 6; k++) {
                             var area = [];
                             // console.log(first[k]['y'])
-                            if (i == 1) {
+                            if (i == 0) {
                                 if (k != 5) {
                                     let stringarea = `${0},${0},${first[k]["x"]},${
                       first[k]["y"]
@@ -596,7 +571,7 @@
                         for (var k = 0; k < 6; k++) {
                             var area = [];
                             // console.log(first[k]['y'])
-                            if (i == 1) {
+                            if (i == 0) {
                                 if (k != 5) {
                                     let stringarea = `${0},${0},${first[k]["x"]},${
                       first[k]["y"]
@@ -841,12 +816,12 @@
                     let yBase = 250;
                     let division = 35;
                     main.append("text")
-                        .attr("x", xBase - 15)
+                        .attr("x", xBase - 12)
                         .attr("y", yBase + division / 2)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
                         .attr("font-size", "15px")
-                        .text("0.1")
+                        .text("0")
                         .style("fill", "white")
                         .style("font-family", "Alata, sans-serif");
 
@@ -874,12 +849,12 @@
                     let xBase_dc = -175;
                     let yBase_dc = 250
                     main_dc.append("text")
-                        .attr("x", xBase_dc - 15)
+                        .attr("x", xBase_dc - 12)
                         .attr("y", yBase_dc + division / 2)
                         .attr("text-anchor", "middle")
                         .attr("dominant-baseline", "middle")
                         .attr("font-size", "15px")
-                        .text("0.1")
+                        .text("0")
                         .style("fill", "white")
                         .style("font-family", "Alata, sans-serif");
 
