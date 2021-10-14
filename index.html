@@ -534,8 +534,8 @@
                   marvel_powers[superpowers[k]][powerrange[i]] / sum,
                   "color:",
                   d3.interpolateReds(
-                      marvel_powers[superpowers[k]][powerrange[i]] / sum
-                    )
+                    marvel_powers[superpowers[k]][powerrange[i]] / sum
+                  )
                 );
                 var upperWeb = main.append("g").classed("upperWeb", true);
                 upperWeb
@@ -556,10 +556,21 @@
             }
 
             // DC
-            console.log("dc data")
-
-            for (var i = 1; i < 4; i++) {
-              var first = polygons.webPoints[i - 1];
+            console.log("dc data");
+            const colorDcScale = d3
+              .scaleLinear()
+              .domain([0, 1])
+              .range(["white", "darkblue"]);
+            //   var data = [0,0.1, 0.2, 0.3, 0.4, 0.5, 1.0]
+            // for(var i=0;i<7;i++){
+            //     console.log("test",colorDcScale(data[i]));
+            // }
+            for (var i = 0; i < 4; i++) {
+              if (i == 0) {
+                var first = polygons.webPoints[i];
+              } else {
+                var first = polygons.webPoints[i - 1];
+              }
               var second = polygons.webPoints[i];
               // console.log("array:,", first, second);
               for (var k = 0; k < 6; k++) {
@@ -595,18 +606,18 @@
                   }
                 }
                 // console.log("area", area);
-                var sum = 206;
+                var dcSum = 206;
                 console.log(
                   "k",
                   k,
                   "data:",
                   dc_powers[superpowers[k]][powerrange[i]],
                   "ratio:",
-                  dc_powers[superpowers[k]][powerrange[i]] / sum,
+                  dc_powers[superpowers[k]][powerrange[i]] / dcSum,
                   "color:",
-                  d3.interpolateReds(
-                      dc_powers[superpowers[k]][powerrange[i]] / sum
-                    )
+                  d3.interpolateBlues(
+                    dc_powers[superpowers[k]][powerrange[i]] / dcSum
+                  )
                 );
                 // console.log(dc_powers[superpowers[k]][powerrange[i - 1]] / sum);
                 var upperWeb = main_dc.append("g").classed("upperWeb", true);
@@ -618,9 +629,12 @@
                   .attr("points", function (d) {
                     return d;
                   })
-                  .attr("fill", d3.interpolateBlues(
-                      dc_powers[superpowers[k]][powerrange[i]] / sum
-                    ));
+                  .attr(
+                    "fill",
+                    colorDcScale(
+                      dc_powers[superpowers[k]][powerrange[i]] / dcSum
+                    )
+                  );
               }
             }
             console.log("MARVEL ======== ", marvel_powers);
